@@ -31,6 +31,24 @@ pipeline {
             }
         }
 
+        stage('Docker Login') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-creds',
+                        usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_TOKEN'
+                    )
+                ]) {
+                    sh '''
+                        echo "$DOCKER_TOKEN" | docker login docker.io \
+                            -u "$DOCKER_USER" \
+                            --password-stdin
+                    '''
+                }
+            }
+        }
+
         stage('Docker Build') {
             steps {
                 sh '''
@@ -70,7 +88,7 @@ pipeline {
         success {
             emailext(
                 subject: "SUCCESS: ${JOB_NAME} #${BUILD_NUMBER}",
-                body: "Pipeline completed successfully.\n\nDocker Image: ${IMAGE}:${BUILD_NUMBER}",
+                body: "Pipeline completed successfully.\nDocker Image: ${IMAGE}:${BUILD_NUMBER}",
                 to: "akhil.46.kk@gmail.com"
             )
         }
@@ -78,7 +96,7 @@ pipeline {
         failure {
             emailext(
                 subject: "FAILED: ${JOB_NAME} #${BUILD_NUMBER}",
-                body: "Pipeline failed.\n\nCheck Jenkins console output:\n${BUILD_URL}",
+                body: "Pipeline failed.\nBuild URL: ${BUILD_URL}",
                 to: "akhil.46.kk@gmail.com"
             )
         }
