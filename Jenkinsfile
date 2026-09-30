@@ -45,7 +45,7 @@ pipeline {
             steps {
                 withCredentials([
                     usernamePassword(
-                        credentialsId: 'github-packages-cred',
+                        credentialsId: 'github-ghcr',
                         usernameVariable: 'USERNAME',
                         passwordVariable: 'TOKEN'
                     )
@@ -71,7 +71,7 @@ pipeline {
             emailext(
                 subject: "SUCCESS: ${JOB_NAME} #${BUILD_NUMBER}",
                 body: "Pipeline completed successfully.\n\nDocker Image: ${IMAGE}:${BUILD_NUMBER}",
-                to: "YOUR_EMAIL@example.com"
+                to: "akhil.46.kk@gmail.com"
             )
         }
 
@@ -79,7 +79,7 @@ pipeline {
             emailext(
                 subject: "FAILED: ${JOB_NAME} #${BUILD_NUMBER}",
                 body: "Pipeline failed.\n\nCheck Jenkins console output:\n${BUILD_URL}",
-                to: "YOUR_EMAIL@example.com"
+                to: "akhil.46.kk@gmail.com"
             )
         }
     }
